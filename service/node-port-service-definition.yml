@@ -1,0 +1,15 @@
+#NodePort connects an internal pod, to the outside of the node
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-service
+spec:
+  type: NodePort
+  ports:
+  - targetPort: 80 #pod port
+    port: 80 #service port
+    nodePort: 30008 #node port to be exposed
+  #list of labels to refer to the pod
+  selector: 
+    app: myapp
+    type: front-end

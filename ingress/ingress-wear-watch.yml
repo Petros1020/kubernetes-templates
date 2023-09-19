@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-wear-watch
+  # annotations:
+  #   nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: wear.my-online-store.com
+    http:
+      paths:
+      - path: /wear
+        pathType: Prefix
+        backend:
+          service:
+            name: wear-service
+            port:
+              number: 80
+      #paths is an array, we can add more
+  - host: watch.my-online-store.com
+    http:
+      - path: /watch
+        pathType: Prefix
+        backend:
+          service:
+            name: watch-service
+            port:
+              number: 80

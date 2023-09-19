@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: myapp-replicaset
+  labels:
+    app: myapp
+    type: front-end
+spec:
+  template:
+    metadata:
+      name: myapp-pod
+      labels:
+        #it has no keywors. can be whatever, e.g. petros: backend
+        app: myapp
+        type: front-end
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx
+          
+  replicas: 3
+  #selector is the main difference from replications controller
+  #because it makes selector mandatory
+  #selector matches the pods
+  #if there are existing pods with tha name of the matchLabel the replicaset will monitor them
+  #without creating them, BUT the spec property with the pods must be there because it a pod
+  #fails, the replicaset must know how to create a new one
+  selector:
+    matchLabels:
+      type: front-end
+      #can also be petros:backend from above
+

@@ -1,0 +1,16 @@
+#clusterIp enables communication between the internal services
+#meaning that if a frontend wants to speak with the backend it cannot know,
+#which pod to hit. CluserIp takes care of that
+apiVersion: v1
+kind: Service
+metadata:
+  name: back-end
+spec:
+  type: ClusterIP
+  ports:
+  - targetPort: 80 #backend exposed
+    port: 80 #service exposed
+  #list of labels to refer to the pod
+  selector: 
+    app: myapp
+    type: back-end

@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db-policy
+spec:
+  podSelector:
+    matchLabels:
+      role: db
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress: #ingress is the traffic that is incomming to the pod         
+  - from:
+    - podSelector:
+        matchLabels:
+          name: api-pod
+    # if nameSpaceSelector had '-' it would mean that it is a rule by itself. 
+    # how it is now, both podSelector and nameSpaceSelector must be true for traffic to be allowed
+      # namespaceSelector: #you can select the namespace also
+      #   matchLabels:
+      #     name: prod
+    # - ipBlock: #can have certain ips to come
+    #     cidr: 192.168.5.10/32
+    ports:
+    - protocol: TCP
+      port: 3306
+  egress: # egress is tha traffic leaving the pod. We do not care about the response traffic
+  - to:
+    - ipBlock:
+        cidr: 192.168.5.10/32
+    ports: 
+    - protocol: TCP
+      port: 80

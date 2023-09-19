@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+#only difference from replicaset in the specific file, is the kind
+kind: StatefulSet
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+spec:
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql
+          volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: data-volume
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: mysql-h
+  # to create the pod together, but still have the other privileges of stateful sets
+  # podManagementPolicy: Parallel
+
+# this is the template in order each pod to have it's own volume  
+  volumeClaimTemplates:
+  - metadata:
+      name: data-volume
+    spec:
+      resources:
+        requests:
+          storage: 1Gi
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: google-storage 

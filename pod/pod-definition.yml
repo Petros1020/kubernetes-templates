@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+    type: front-end
+spec:
+   #tolerations adn taints marks which pods
+   #can be deployed to certain nodes. 
+  # tolerations:
+  # - key: "app"
+  #   operator: "Equal" 
+  #   value: "Blue"
+  #   effect: "NoSchedule"
+
+  # securityContext:
+  #   runAsUser: 1000
+  #   capabilities:
+  #     add: ["MAC_ADMIN"]
+
+  containers:
+    - image: nginx
+      name: nginx-container
+      # envFrom:
+      #   - configMapRef:
+      #       name: app-config
+      #   - secretRef:
+      #       name: app-secret
+      
+      #This one makes the container's state to ready when the call succeeds and
+      #Not when the container is up, but still initializing
+      #can also performed with tcpSocket: or exec: command: 
+      # In multi-pod this is necessary because traffic might be served to a pod
+      # that it is just deployed due to scalling, and is not initialized yet
+      # readinessProbe:
+      #   httpGet:
+      #     path: /api/ready
+      #     port: 8080
+
+      #the same as above, but for constantly checking the health in order to restart
+      #pods when there is a problem 
+      # livenessProbe:
+      #   httpGet:
+      #     path: /api/ready
+      #     port: 8080
+
+      
+      # resources:
+      #   requests:
+      #     memory: "250Mi"
+      #     cpu: "250Mi"
+      #   limits:
+      #     memory: "250Mi"
+      #     cpu: "250Mi"
+
+
+  #simpler way to chose in which node should the pod be deployed
+  #you cannot do OR etc operation. Instead use affinity
+  # nodeSelector:
+  #   size: Large
+  
+  # to select which pods go to which nodes
+  # affinity:
+  #   nodeAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       nodeSelectorTerms:
+  #       - matchExpressions:
+  #         - key: size
+  #           operator: In #Exists etc
+  #           values:
+  #           - Large
+  #           - Medium
